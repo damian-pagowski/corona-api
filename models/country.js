@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const countrySchema = new Schema({
     name: { type: String, required: true },
+    short: { type: String, required: true },
     totalCases: { type: Number, required: false },
     newCases: { type: Number, required: false },
     totalDeaths: { type: Number, required: false },

@@ -19,7 +19,14 @@ router.get("/countries/:country", (req, res, next) => {
   //   log - debug
   console.log("DATE: " + date + " COUNTRY: " + country);
   //    db
-  Country.find({ name: country, date: { $gt: date } })
+  Country.find({ short: country, date: { $gt: date } })
+    .then((result) => res.json(result))
+    .catch((error) => next(error));
+});
+
+router.get("/list/countries", (req, res, next) => {
+  Country.find()
+    .distinct('country')
     .then((result) => res.json(result))
     .catch((error) => next(error));
 });
