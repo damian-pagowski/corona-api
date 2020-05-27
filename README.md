@@ -39,6 +39,12 @@ Retrieve 'corona' stats for given country
 
 Create a report for single country
 
+- Requires authentication. Headers example:
+
+```
+Content-Type : application/json
+Authorization : Bearer <JWT_TOKEN>
+```
 - example:
 
 ```
@@ -55,7 +61,7 @@ Create a report for single country
 
 ## TODO
 
-- authentication (JWT)
+- authentication (JWT) [DONE]
 - error handling
 - more detailed data models?
 - ??

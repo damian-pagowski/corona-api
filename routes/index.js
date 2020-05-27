@@ -2,7 +2,26 @@ const express = require("express");
 const router = express.Router();
 const moment = require("moment");
 const Country = require("../models/country");
-router.get("/", function (req, res, next) {
+require("dotenv").config();
+
+const jwt = require("jsonwebtoken");
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+    console.log(err);
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    console.log("USER: " + user)
+    next();
+  });
+}
+
+router.get("/", authenticateToken, (req, res, next) => {
   res.json({ status: "up" });
 });
 
@@ -33,13 +52,12 @@ router.get("/countries/:country", (req, res, next) => {
 });
 
 router.get("/list/countries", (req, res, next) => {
-  Country
-    .distinct("name")
+  Country.distinct("name")
     .then((result) => res.json(result))
     .catch((error) => next(error));
 });
 
-router.post("/countries", (req, res, next) => {
+router.post("/countries", authenticateToken, (req, res, next) => {
   // params
   const date = Date.now();
   const country = new Country({ ...req.body, date });
@@ -54,3 +72,11 @@ router.post("/countries", (req, res, next) => {
     .catch((error) => next(error));
 });
 module.exports = router;
+
+// GENERATE TOKEN
+
+// function generateAccessToken(username) {
+//   return jwt.sign(username, process.env.TOKEN_SECRET);
+// }
+
+// console.log(generateAccessToken('scraper'));
