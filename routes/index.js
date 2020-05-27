@@ -12,7 +12,7 @@ router.get("/countries/:country", (req, res, next) => {
   const { country } = req.params;
 
   const date = dateParam
-    ? moment("2005-07-08", "YYYY-MM-DD", true).toDate()
+    ? moment(dateParam, "YYYY-MM-DD", true).toDate()
     : new Date();
   date.setHours(0, 0, 0, 0);
 
