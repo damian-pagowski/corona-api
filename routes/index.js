@@ -8,25 +8,33 @@ router.get("/", function (req, res, next) {
 
 router.get("/countries/:country", (req, res, next) => {
   //   params
-  const dateParam = req.query.date;
+  const { date, latest_only } = req.query;
   const { country } = req.params;
 
-  const date = dateParam
-    ? moment(dateParam, "YYYY-MM-DD", true).toDate()
+  const dateParam = date
+    ? moment(date, "YYYY-MM-DD", true).toDate()
     : new Date();
-  date.setHours(0, 0, 0, 0);
+  dateParam.setHours(0, 0, 0, 0);
 
   //   log - debug
-  console.log("DATE: " + date + " COUNTRY: " + country);
+  console.log("DATE: " + dateParam + " COUNTRY: " + country);
   //    db
-  Country.find({ short: country, date: { $gt: date } })
-    .then((result) => res.json(result))
+  Country.find({ short: country, date: { $gt: dateParam } })
+    .then((result) =>
+      res.json(
+        latest_only
+          ? result.length > 0
+            ? result[result.length - 1]
+            : {}
+          : result
+      )
+    )
     .catch((error) => next(error));
 });
 
 router.get("/list/countries", (req, res, next) => {
-  Country.find()
-    .distinct('country')
+  Country
+    .distinct("name")
     .then((result) => res.json(result))
     .catch((error) => next(error));
 });
