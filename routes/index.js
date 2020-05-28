@@ -38,7 +38,12 @@ router.get("/countries/:country", (req, res, next) => {
   //   log - debug
   console.log("DATE: " + dateParam + " COUNTRY: " + country);
   //    db
-  Country.find({ short: country, date: { $gt: dateParam } })
+
+  const conditions  = { short: country }
+  if (date){
+    conditions.date =  { $gt: dateParam }
+  }
+  Country.find(conditions)
     .then((result) =>
       res.json(
         latest_only
